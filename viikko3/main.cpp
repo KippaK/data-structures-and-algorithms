@@ -26,13 +26,11 @@ int main(int argc, char **argv)
       if (argv[i] == "-w" || argv[i] == "--width") {
          if (argc > i + 1) {
             col = atoi(argv[i+1]);
-            i++;
          }
       }
       if (argv[i] == "-h" || argv[i] == "--height") {
          if (argc > i + 1) {
             row = atoi(argv[i+1]);
-            i++;
          }
       }
    }
@@ -47,7 +45,7 @@ int main(int argc, char **argv)
       system("clear");
       life.update();
       life.print();
-      cout << "Press enter to view nexr generation" << endl;
+      cout << "Press enter to view next generation" << endl;
       getch();
    }
    return 0;

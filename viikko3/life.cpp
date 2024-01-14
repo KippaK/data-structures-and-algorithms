@@ -65,6 +65,9 @@ int Life::neighbor_count(int y, int x)
    int count = 0;
    for (int i = y - 1; i < y + 2; i++) {
       for (int j = x - 1; j < x + 2; j++) {
+         if (i < 0 || i == row || j < 0 || j == col) {
+            continue;
+         }
          count += grid[i*col+j];  
       }
    }

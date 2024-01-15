@@ -14,6 +14,11 @@ Life::Life(int aRow, int aCol)
    grid = new int[row*col];
 }
 
+Life::~Life()
+{
+   delete grid;
+}
+
 void Life::initialize()
 {
    for (int y = 0; y < row; y++) {

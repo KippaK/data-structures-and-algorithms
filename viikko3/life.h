@@ -8,6 +8,7 @@ class Life {
 public:
 	Life();
 	Life(int aRow, int aCol);
+	~Life();
 	void initialize();
 	void print();
 	void update();

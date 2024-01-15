@@ -3,7 +3,7 @@
 template <typename T>
 Error_code Stack<T>::push(const T &item) {
    Error_code outcome = success;
-   if (count >= maxstack)
+   if (count >= stack_size)
       outcome = overflow;
    else
       entry[count++] = item;
@@ -38,5 +38,20 @@ bool Stack<T>::empty() const {
 template <typename T>
 Stack<T>::Stack() {
    count = 0;
+   stack_size = DEFAULT_STACK_SIZE;
+   entry = new T[stack_size];
 }
 
+template <typename T>
+Stack<T>::Stack(size_t aStack_size)
+{
+   count = 0;
+   stack_size = aStack_size;
+   entry = new T[stack_size];
+}
+
+template <typename T>
+Stack<T>::~Stack()
+{
+   delete entry;
+}

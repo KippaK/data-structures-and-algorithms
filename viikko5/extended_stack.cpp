@@ -3,7 +3,7 @@
 template <typename T>
 Error_code Extended_Stack<T>::push(T item) {
    Error_code outcome = success;
-   if (count >= maxstack)
+   if (count >= stack_size)
       outcome = overflow;
    else
       entry[count++] = item;
@@ -37,7 +37,7 @@ bool Extended_Stack<T>::empty() const {
 
 template <typename T>
 bool Extended_Stack<T>::full() const {
-   return (count == maxstack);
+   return (count == stack_size);
 }
 
 template <typename T>
@@ -53,4 +53,18 @@ int Extended_Stack<T>::size() const {
 template <typename T>
 Extended_Stack<T>::Extended_Stack() {
    count = 0;
+   stack_size = DEFAULT_STACK_SIZE;
+   entry = new T[stack_size];
+}
+
+template <typename T>
+Extended_Stack<T>::Extended_Stack(size_t aStack_size) {
+   count = 0;
+   stack_size = aStack_size;
+   entry = new T[stack_size];
+}
+
+template <typename T>
+Extended_Stack<T>::~Extended_Stack() {
+   delete entry;
 }

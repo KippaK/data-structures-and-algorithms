@@ -105,28 +105,3 @@ void Life::instructions()
    cout << "The occuied cells change from generation to generation" << endl;
    cout << "according to the number of neighboring cell which are alive" << endl;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

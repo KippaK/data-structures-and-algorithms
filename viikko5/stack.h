@@ -10,6 +10,7 @@ class Stack {
 public:
    Stack();
    Stack(size_t aStack_size);
+   Stack(Stack &aStack);
    ~Stack();
    bool empty() const;
    Error_code pop();
@@ -27,6 +28,7 @@ class Extended_Stack : public Stack<T> {
 public:
    Extended_Stack();
    Extended_Stack(size_t aStack_size);
+   Extended_Stack(Extended_Stack &stack);
    ~Extended_Stack();
    void clear(); // Reset the stack to be empty.
    bool full() const; // If the stack is full, return true; else return false.
@@ -34,8 +36,6 @@ public:
 };
 
 // stack.cpp
-
-#include "stack.h"
 
 template <typename T>
 Error_code Stack<T>::push(const T &item) {
@@ -88,6 +88,15 @@ Stack<T>::Stack(size_t aStack_size)
 }
 
 template <typename T>
+Stack<T>::Stack(Stack &aStack)
+{
+   count = aStack.count;
+   stack_size = aStack.stack_size;
+   entry = new T[stack_size];
+   memcpy(aStack.entry, entry, stack_size * sizeof(T));
+}
+
+template <typename T>
 Stack<T>::~Stack()
 {
    if (entry != NULL) {
@@ -96,8 +105,6 @@ Stack<T>::~Stack()
    }
 }
 // extended_stack.cpp
-
-#include "stack.h"
 
 template <typename T>
 bool Extended_Stack<T>::full() const {
@@ -115,17 +122,18 @@ int Extended_Stack<T>::size() const {
 }
 
 template <typename T>
-Extended_Stack<T>::Extended_Stack() {
-   Stack<T>::count = 0;
-   Stack<T>::stack_size = DEFAULT_STACK_SIZE;
-   Stack<T>::entry = new T[Stack<T>::stack_size];
+Extended_Stack<T>::Extended_Stack() : Stack<T>() 
+{
 }
 
 template <typename T>
-Extended_Stack<T>::Extended_Stack(size_t aStack_size) {
-   Stack<T>::count = 0;
-   Stack<T>::stack_size = aStack_size;
-   Stack<T>::entry = new T[Stack<T>::stack_size];
+Extended_Stack<T>::Extended_Stack(size_t aStack_size) : Stack<T>(aStack_size) 
+{
+}
+
+template <typename T>
+Extended_Stack<T>::Extended_Stack(Extended_Stack &stack) : Stack<T>(stack)
+{
 }
 
 template <typename T>

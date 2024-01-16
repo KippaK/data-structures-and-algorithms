@@ -1,7 +1,7 @@
 BIN = t1
 
 t1:
-	g++ tehtava1.cpp -o $(BIN)
+	g++ main.cpp -o $(BIN)
 
 clean:
 	rm $(BIN)

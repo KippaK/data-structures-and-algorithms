@@ -90,7 +90,10 @@ Stack<T>::Stack(size_t aStack_size)
 template <typename T>
 Stack<T>::~Stack()
 {
-   delete[] entry;
+   if (entry != NULL) {
+      delete[] entry;
+      entry = NULL;
+   }
 }
 // extended_stack.cpp
 
@@ -127,6 +130,9 @@ Extended_Stack<T>::Extended_Stack(size_t aStack_size) {
 
 template <typename T>
 Extended_Stack<T>::~Extended_Stack() {
-   delete[] Stack<T>::entry;
+   if (Stack<T>::entry != NULL) {
+      delete[] Stack<T>::entry;
+      Stack<T>::entry = NULL;
+   }
 }
 

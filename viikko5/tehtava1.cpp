@@ -23,6 +23,20 @@ Error_code item_stack_to_stack(
    return err;
 }
 
+Error_code reverse_stack_print(Extended_Stack<char> &stack) {
+   Error_code err = success;
+   Extended_Stack<char> new_stack(stack.size());
+   while (!stack.empty()) {
+      char ch;
+      stack.top(ch);
+      cout << ch;
+      err = item_stack_to_stack(stack, new_stack);
+   }
+   stack = new_stack;
+   cout << endl;
+   return err;
+}
+
 Error_code reverse_stack(Extended_Stack<char> &stack) { 
    Error_code err = success;
    Extended_Stack<char> new_stack(stack.size());
@@ -37,6 +51,7 @@ Error_code user_input_to_stack(Extended_Stack<char> &stack)
 {
    char c;
    Error_code err = success;
+   cout << "Enter a string: ";
    while(cin.get(c)) {
       err = stack.push(c);
    }
@@ -47,5 +62,9 @@ int main()
 {
    Error_code err = success;
    Extended_Stack<char> s(STACK_SIZE);
-   err = reverse_stack(s);
+   for (;;) {
+      err = user_input_to_stack(s);
+      err = reverse_stack(s);
+   }
+   return 0;
 }

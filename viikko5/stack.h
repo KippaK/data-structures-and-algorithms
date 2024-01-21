@@ -101,9 +101,9 @@ Stack<T>::Stack(const Stack &aStack)
 template <typename T>
 Stack<T>::~Stack()
 {
-   if (entry != NULL) {
+   if (entry != nullptr) {
       delete[] entry;
-      entry = NULL;
+      entry = nullptr;
    }
 }
 // extended_stack.cpp
@@ -140,9 +140,9 @@ Extended_Stack<T>::Extended_Stack(const Extended_Stack &stack) : Stack<T>(stack)
 
 template <typename T>
 Extended_Stack<T>::~Extended_Stack() {
-   if (Stack<T>::entry != NULL) {
+   if (Stack<T>::entry != nullptr) {
       delete[] Stack<T>::entry;
-      Stack<T>::entry = NULL;
+      Stack<T>::entry = nullptr;
    }
 }
 

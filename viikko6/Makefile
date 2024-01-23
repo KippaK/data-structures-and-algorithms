@@ -1,13 +1,11 @@
-BIN1 = t1
-BIN2 = t2
-
-BIN = $(BIN1) $(BIN2)
-
 t1:
-	g++ tehtava1.cpp -o $(BIN1)
+	g++ tehtava1.cpp -o t1
 
 t2:
-	g++ tehtava2.cpp -o $(BIN2)
+	g++ tehtava2.cpp -o t2
+
+t3:
+	g++ tehtava3.cpp -o t3
 
 clean:
-	rm $(BIN) $(BIN2)
+	rm t1 t2 t3

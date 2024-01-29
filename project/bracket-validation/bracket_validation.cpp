@@ -10,10 +10,8 @@ namespace fs = std::filesystem;
 using std::cout;
 using std::endl;
 
-enum class MyClass {};
-
 typedef struct {
-	string i_file;
+	fs::path i_file;
 } Config;
 
 uint64_t get_file_size(char *file_name)
@@ -29,17 +27,23 @@ void print_usage(char *exe_name)
 
 // returns 0 if arguments are valid
 // otherwise returns non-zero value
-int parse_arguments(Config &config, int argc, char** argv)
+bool parse_arguments(Config &config, int argc, char** argv)
 {
 	if (argc < 2) {
-		return NOT_ENOUGH_ARGUMENTS;
+		return false;
 	}	
-
-	return 0;
+	if (argc > 3) {
+		return false;
+	}
+	if (argc == 3 && argv[2][0] != '-') {
+		return false;
+	}
+	
+	return true;
 }
 
 void print_invalid_syntax(
-	string error, 
+	char* error, 
 	uint row, 
 	uint col, 
 	char* line)
@@ -62,7 +66,7 @@ void ignore_character()
 int main(int argc, char** argv)
 {
 	Config conf;
-	if (parse_arguments(conf, argc, argv)) {
+	if (!parse_arguments(conf, argc, argv)) {
 		print_usage(argv[0]);
 		return 1;
 	}

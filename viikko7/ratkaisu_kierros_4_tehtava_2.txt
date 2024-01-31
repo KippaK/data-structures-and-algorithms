@@ -1,0 +1,28 @@
+a)
+q.append('a');	a
+q.serve( );
+q.append('b');	b
+q.serve( );
+q.append('c');	c
+q.append('d');	cd
+q.serve( );		d
+
+b)
+q.append('a');	a
+q.append('b');	ab
+q.retrieve(x);	ab
+q.serve( );		b
+q.append('c');	bc
+q.append(x);	bca
+q.serve( );		ca
+q.serve( );		a
+
+c) 
+q.append('a');	a
+x = 'b';		a
+q.append('x');	ax
+q.retrieve(y);	ax
+q.serve( );		x
+q.append(x);	xb
+q.serve( );		b
+q.append(y);	ba

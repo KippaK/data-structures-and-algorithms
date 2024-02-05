@@ -1,11 +1,9 @@
+all:
+	g++ tehtava4.cpp utility.cpp -o t4
+	rm t4
+
 t1:
-	g++ tehtava1.cpp -o t1
-
-t2:
-	g++ tehtava2.cpp -o t2
-
-t3:
-	g++ tehtava3.cpp -o t3
+	g++ tehtava1.cpp utility.cpp -o t1
 
 clean:
-	rm t1 t2 t3
+	rm t1

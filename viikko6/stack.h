@@ -1,7 +1,7 @@
 // stack.h
 
 #pragma once
-#include "../utility/utility.h"
+#include "utility.h"
 
 #include <cstring>
 

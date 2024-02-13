@@ -1,20 +1,23 @@
+#pragma once
+
 #include "stack.h"
 #include "file_error.h"
 
 #include <vector>
-
-#include <filesystem>
-namespace fs = std::filesystem;
-
-
+#include <string>
+#include <fstream>
 
 class File_handler {
 public:
 	File_handler();
+	void open_file(const char* file_path);
+	void close_file();
+
+	std::string log_errors() const;
 
 private:
 	Stack<char> stack;
 	std::vector<File_error> errors;
-	fs::path file_path;
+	std::fstream fs;
 	size_t col, row;
 };

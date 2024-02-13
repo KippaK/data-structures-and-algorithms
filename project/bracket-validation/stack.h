@@ -36,9 +36,9 @@ public:
    Extended_Stack(size_t aStack_size);
    Extended_Stack(const Extended_Stack &stack);
    ~Extended_Stack();
-   void clear(); // Reset the stack to be empty.
-   bool full() const; // If the stack is full, return true; else return false.
-   int size() const; // Return the number of entries in the stack.
+   void clear();
+   bool full() const;
+   int size() const;
 };
 
 // stack.cpp

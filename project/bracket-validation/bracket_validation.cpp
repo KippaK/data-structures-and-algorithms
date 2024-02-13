@@ -1,4 +1,4 @@
-#include "stack.h"
+#include "file_handler.h"
 
 #include <string>
 using std::string;
@@ -15,5 +15,8 @@ void print_usage(char *exe_name)
 
 int main(int argc, char** argv)
 {
+	File_handler f;
+	f.open_file("queue.txt");
+
 	return 0;
 }

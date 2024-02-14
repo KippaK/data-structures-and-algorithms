@@ -4,6 +4,22 @@
 #include <sstream>
 #include <iomanip>
 
+
+char File_handler::s_get_second_last()
+{
+	char top, ret;
+	stack.top(top);
+	stack.pop();
+	stack.top(ret);
+	stack.push(top);
+	return ret;
+}
+
+void File_handler::find_errors()
+{
+		
+}
+
 std::string File_handler::log_errors() const
 {
 	auto now = std::chrono::system_clock::now();

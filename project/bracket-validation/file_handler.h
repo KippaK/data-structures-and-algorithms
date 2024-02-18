@@ -8,10 +8,15 @@
 #include <fstream>
 
 class File_handler {
+private:
+	char s_get_2nd_last();
+
 public:
 	File_handler();
 	void open_file(const char* file_path);
 	void close_file();
+
+	void find_errors();
 
 	std::string log_errors() const;
 

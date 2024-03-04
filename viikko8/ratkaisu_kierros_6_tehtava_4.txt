@@ -1,0 +1,1 @@
+Koska "top_node = new_top;" asettaa top_node->next muuttujaan väärän arvon.

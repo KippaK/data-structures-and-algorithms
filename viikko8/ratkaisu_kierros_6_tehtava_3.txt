@@ -1,0 +1,18 @@
+
+a)
+Node *p0 = new Node('0');
+Node *p1 = new Node('1');
+p0->next = p1;
+
+b)
+Node *p0 = new Node('0');
+Node *p1 = new Node('1', p0);
+Node *p2 = p1;
+
+c)
+Node *p0 = new Node('0');
+Node *p1 = new Node('1');
+Node *p2 = new Node('2');
+p0->next = p1;
+p1->next = p2;
+p2->next = p1;

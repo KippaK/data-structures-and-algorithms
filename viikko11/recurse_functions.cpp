@@ -13,4 +13,9 @@ unsigned int recurse_e2(unsigned int n)
 	return recurse_e2((n + 1) / 2) + recurse_e2((n - 1) / 2);
 }
 
-
+unsigned int tower_of_hanoi_move_count(unsigned int height)
+{
+	if (height == 0) { return 0; }
+	if (height == 1) { return 1; }
+	return tower_of_hanoi_move_count(height - 1) * 2 + 1;
+}

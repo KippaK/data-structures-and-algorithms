@@ -39,8 +39,8 @@ int main()
         move(disks, 1, 3, 2);
         t2 = high_resolution_clock::now();  // Record end time
 
-        auto duration = duration_cast<milliseconds>(t2 - t1).count();
-        cout << "Number of Disks: " << disks << ", Execution Time: " << duration << " ms" << endl;
+        auto duration = duration_cast<nanoseconds>(t2 - t1).count();
+        cout << "Number of Disks: " << disks << ", Execution Time: " << duration << " ns" << endl;
     }
 
     return 0;

@@ -1,5 +1,5 @@
 KIERROS=8
-TEHTAVA=3
+TEHTAVA=5
 
 TARGET=ratkaisu_kierros_$(KIERROS)_tehtava_$(TEHTAVA).cpp
 

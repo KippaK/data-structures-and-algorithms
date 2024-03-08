@@ -13,10 +13,10 @@ public:
 	bool empty() const;
 	void clear();
 
-	int append(T &n);
-	int serve();
-	int retrieve(T &n) const;
-	int serve_and_retrieve(T &n);
+	Error_code append(T &n);
+	Error_code serve();
+	Error_code retrieve(T &n) const;
+	Error_code serve_and_retrieve(T &n);
 
 private:
 	size_t len;
@@ -47,7 +47,7 @@ void Queue<T>::clear()
 
 
 template <typename T>
-int Queue<T>::append(T &n)
+Error_code Queue<T>::append(T &n)
 {
 	if (tail == nullptr && head == nullptr) {
 		tail = new Queue_node<T>(n);
@@ -60,37 +60,37 @@ int Queue<T>::append(T &n)
 	if (tail->next != nullptr) {
 		tail = tail->next;
 	}
-	return 0;
+	return success;
 }
 
 template <typename T>
-int Queue<T>::serve()
+Error_code Queue<T>::serve()
 {
 	if (len == 0) {
-		return 1;
+		return underflow;
 	}
 	Queue_node<T> *old_head = head;
 	head = head->next;
 	old_head->next = nullptr;
 	delete old_head;
 	len--;
-	return 0;
+	return success;
 }
 
 template <typename T>
-int Queue<T>::retrieve(T &n) const
+Error_code Queue<T>::retrieve(T &n) const
 {
-	if (head->data == NULL) {
-		return 1;		
+	if (len == 0) {
+		return underflow;		
 	}
 	n = head->data;
-	return 0;
+	return success;
 }
 
 template <typename T>
-int Queue<T>::serve_and_retrieve(T &n)
+Error_code Queue<T>::serve_and_retrieve(T &n)
 {
-	int i = 0;
+	Error_code i = success;
 	i = retrieve(n);
 	i += serve();
 	return i;
@@ -99,7 +99,6 @@ int Queue<T>::serve_and_retrieve(T &n)
 template <typename T>
 Queue<T>::Queue() 
 {
-
 	head = nullptr;
 	tail = nullptr;
 	len = 0;

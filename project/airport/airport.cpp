@@ -42,7 +42,7 @@ void initialize(int &end_time, int &queue_limit,
 
 void run_idle(int time)
 {
-   cout << time << ": Runway is idle." << endl;
+	cout << time << ": Runway is idle." << endl;
 }
 
 int main()

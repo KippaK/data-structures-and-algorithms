@@ -1,2 +1,7 @@
+WARNINGS=-Wall -Wextra
+
 all:
-	g++ *.cpp -o p
+	g++ *.cpp $(WARNINGS) -o p
+
+clean:
+	rm p

@@ -13,6 +13,8 @@ public:
 	Error_code can_depart(Plane current);
 	Runway_activity activity(int time, Plane &moving);
 	void shut_down(int time) const;
+	size_t landing_queue_size() const;
+	size_t takeoff_queue_size() const;
 
 private:
 	Queue<Plane> landingQ;

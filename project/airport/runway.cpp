@@ -69,6 +69,16 @@ Runway_activity Runway::activity(int time, Plane &moving)
 	return in_progress;
 }
 
+size_t Runway::landing_queue_size() const
+{
+	return landingQ.size();
+}
+
+size_t Runway::takeoff_queue_size() const
+{
+	return takeoffQ.size();
+}
+
 void Runway::shut_down(int time) const
 {
    cout << "Simulation has concluded after " << time << " time units." << endl

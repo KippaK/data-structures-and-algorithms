@@ -11,6 +11,8 @@ public:
 	void fly(int time) const;
 	int started() const;
 
+	size_t fuel_time;
+
 private:
 	int flt_num;
 	int clock_start;

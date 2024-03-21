@@ -1,0 +1,7 @@
+KIERROS=10
+TEHTAVA=3
+
+TARGET=ratkaisu_kierros_$(KIERROS)_tehtava_$(TEHTAVA).cpp
+
+all:
+	g++ $(TARGET) -o t$(TEHTAVA)

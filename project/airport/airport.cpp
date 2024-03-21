@@ -406,10 +406,10 @@ void single_runway_fuel() {
     for (int current_time = 0; current_time < end_time; current_time++) {
         int number_arrivals = variable.poisson(arrival_rate);
         for (int i = 0; i < number_arrivals; i++) {
-            int fuel_time = variable.integer(1, 10); // Generating random fuel time
+            int fuel_time = variable.random_integer(1, 10); // Generating random fuel time
             Plane current_plane(flight_number++, current_time, arriving, fuel_time); // Adding fuel_time to Plane constructor
             if (current_plane.get_fuel_time() <= small_airport.get_queue_limit() && small_airport.can_land(current_plane) == success) {
-                small_airport.land(current_plane); // Plane has enough fuel to wait in the queue
+                small_airport.can_land(current_plane); // Plane has enough fuel to wait in the queue
             } else {
                 current_plane.land(current_time); // Plane doesn't have enough fuel, it lands immediately
             }
@@ -419,13 +419,11 @@ void single_runway_fuel() {
         for (int j = 0; j < number_departures; j++) {
             Plane current_plane(flight_number++, current_time, departing);
             if (small_airport.can_depart(current_plane) == success) {
-                small_airport.depart(current_plane);
+                small_airport.can_depart(current_plane);
             } else {
                 current_plane.refuse(); // If unable to depart, refuse the plane
             }
         }
-
-        small_airport.activity(current_time); // Update runway activity
     }
     small_airport.shut_down(end_time);
 }

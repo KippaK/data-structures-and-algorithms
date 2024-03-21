@@ -10,6 +10,12 @@ Runway::Runway(int limit)
 	land_wait = takeoff_wait = idle_time = 0;
 }
 
+
+size_t Runway::get_queue_limit() const
+{
+	return queue_limit;
+}
+
 Error_code Runway::can_land(Plane current)
 {
 	Error_code result;

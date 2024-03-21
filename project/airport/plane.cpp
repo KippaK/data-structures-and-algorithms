@@ -17,6 +17,19 @@ Plane::Plane(int flt, int time, Plane_status status)
       cout << "take off." << endl;
 }
 
+Plane::Plane(int flt, int time, Plane_status status, size_t fuel)
+{
+   flt_num = flt;
+   clock_start = time;
+   state = status;
+   fuel_time = fuel;
+   cout << "Plane number " << flt << " ready to ";
+   if (status == arriving)
+      cout << "land." << endl;
+   else
+      cout << "take off." << endl;
+}
+
 Plane::Plane()
 {
    flt_num = -1;
@@ -47,6 +60,11 @@ void Plane::fly(int time) const
    cout << time << ": Plane number " << flt_num << " took off after "
         << wait << " time unit" << ((wait == 1) ? "" : "s")
         << " in the takeoff queue." << endl;
+}
+
+size_t Plane::get_fuel_time() const
+{
+	return fuel_time;
 }
 
 int Plane::started() const

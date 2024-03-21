@@ -15,6 +15,7 @@ public:
 	void shut_down(int time) const;
 	size_t landing_queue_size() const;
 	size_t takeoff_queue_size() const;
+	size_t get_queue_limit() const;
 
 private:
 	Queue<Plane> landingQ;

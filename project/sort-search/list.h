@@ -4,7 +4,7 @@
 
 template <class C>
 struct Node {
-	C entry;
+	C data;
 	Node<C> *next;
 
 	Node();
@@ -18,9 +18,9 @@ Node<C>::Node()
 }
 
 template <class C>
-Node<C>::Node (C data, Node<C> *link_next)
+Node<C>::Node (C item, Node<C> *link_next)
 {
-	entry = data;
+	data = item;
 	next = link_next;
 }
 
@@ -34,7 +34,8 @@ public:
 	void clear();
 	void traverse(void (*visit)(C &));
 	Error_code retrieve(int position, C &x) const;
-	Error_code replace(int position, const C &x);
+	Error_code retrieve(int postition, Node<C> &x) const;
+	Error_code replace(int position, const C *x);
 	Error_code remove(int position, C &x);
 	Error_code insert(int position, const C &x);
 	Error_code push_back(const C &x);
@@ -93,7 +94,7 @@ void List<C>::traverse(void (*visit)(C &))
 	Node<C> *q;
 
 	for (q = head; q; q = q->next) {
-		(*visit)(q->entry);
+		(*visit)(q->data);
 	}
 }
  
@@ -145,10 +146,22 @@ Error_code List<C>::retrieve(int position, C &x) const
 		return utility_range_error;
 	}
 	current = set_position(position);
-	x = current->entry;
+	x = current->data;
 	return success;
 }
  
+template <class C>
+Error_code List<C>::retrieve(int position, Node<C> *x) const
+{
+	Node<C> *current;
+	if (position < 0 || position >= count) {
+		return utility_range_error;
+	}
+	current = set_position(position);
+	x = current;
+	return success;
+}
+
 template <class C>
 Error_code List<C>::replace(int position, const C &x)
 {
@@ -157,7 +170,7 @@ Error_code List<C>::replace(int position, const C &x)
 		return utility_range_error;
 	}
 	current = set_position(position);
-	current->entry = x;
+	current->data = x;
 	return success;
 }
  
@@ -180,7 +193,7 @@ Error_code List<C>::remove(int position, C &x)
 		current = head;
 		head = head->next;
 	}
-	x = current->entry;
+	x = current->data;
 	delete current;
 	count--;
 	return success;
@@ -212,10 +225,10 @@ List<C>::List(const List<C> &copy)
 		head = NULL;
 	}
 	else {
-		new_node = head = new Node<C>(old_node->entry);
+		new_node = head = new Node<C>(old_node->data);
 		while (old_node->next != NULL) {
 			old_node = old_node->next;
-			new_node->next = new Node<C>(old_node->entry);
+			new_node->next = new Node<C>(old_node->data);
 			new_node = new_node->next;
 		}
 	}

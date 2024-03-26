@@ -34,8 +34,8 @@ public:
 	void clear();
 	void traverse(void (*visit)(C &));
 	Error_code retrieve(int position, C &x) const;
-	Error_code retrieve(int postition, Node<C> &x) const;
-	Error_code replace(int position, const C *x);
+	Error_code retrieve(int postition, Node<C> *x) const;
+	Error_code replace(int position, const C &x);
 	Error_code remove(int position, C &x);
 	Error_code insert(int position, const C &x);
 	Error_code push_back(const C &x);

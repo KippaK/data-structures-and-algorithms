@@ -151,7 +151,7 @@ Error_code List<C>::retrieve(int position, C &x) const
 }
  
 template <class C>
-Error_code List<C>::retrieve(int position, Node<C> *x) const
+Error_code List<C>::retrieve(int position, Node<C> *&x) const
 {
 	Node<C> *current;
 	if (position < 0 || position >= count) {

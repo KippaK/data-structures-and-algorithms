@@ -46,14 +46,14 @@ Error_code insertion_sort(List<C> &list)
 				if (status != success) { return status; }
 				status = list.insert(j + 1, temp);
 				if (status != success) { return status; }
-				continue;
+				break;
 			}
 			if (j == 0) {
 				status = list.remove(i, temp);
 				if (status != success) { return status; }
 				status = list.insert(0, temp);
 				if (status != success) { return status; }
-				continue;
+				break;
 			}
 		}
 	}
@@ -93,14 +93,102 @@ Error_code bubble_sort(List<C> &list)
 }
 
 template <class C>
-Error_code merge_sort(List<C> &list)
-{
-	
+Node<C> *merge(Node<C> *list1, Node<C> *list2) {
+    if (!list1) return list2;
+    if (!list2) return list1;
+
+    Node<C> *result = nullptr;
+
+    if (list1->data <= list2->data) {
+        result = list1;
+        result->next = merge(list1->next, list2);
+    } else {
+        result = list2;
+        result->next = merge(list1, list2->next);
+    }
+
+    return result;
 }
 
 template <class C>
-Error_code quicksort(List<C> &list)
-{
-	
+Error_code merge_sort(List<C> &list) {
+    if (list.size() <= 1) return success;
+
+    List<C> list1, list2;
+    int mid = list.size() / 2;
+    C x;
+
+    for (int i = 0; i < mid; ++i) {
+        list.retrieve(i, x);
+        list1.insert(i, x);
+    }
+
+    for (int i = mid; i < list.size(); ++i) {
+        list.retrieve(i, x);
+        list2.insert(i - mid, x);
+    }
+
+    merge_sort(list1);
+    merge_sort(list2);
+
+    Node<C> *sorted = merge(list1.head, list2.head);
+
+    list.clear();
+    while (sorted) {
+        list.push_back(sorted->data);
+        Node<C> *temp = sorted;
+        sorted = sorted->next;
+        delete temp;
+    }
+
+    return success;
 }
 
+template <class C>
+int partition(List<C> &list, int low, int high) {
+    C pivot;
+    list.retrieve(low, pivot); // Choose the pivot as the first element
+    int left = low + 1;
+    int right = high;
+    
+    while (left <= right) {
+        C left_item, right_item;
+        list.retrieve(left, left_item);
+        list.retrieve(right, right_item);
+        
+        if (left_item <= pivot) {
+            left++;
+        } else if (right_item > pivot) {
+            right--;
+        } else {
+            list.replace(left, right_item);
+            list.replace(right, left_item);
+            left++;
+            right--;
+        }
+    }
+    
+    list.replace(low, list.set_position(right)->data);
+    list.replace(right, pivot);
+    
+    return right;
+}
+
+template <class C>
+void quicksort_helper(List<C> &list, int low, int high) {
+    if (low < high) {
+        int pivot_index = partition(list, low, high);
+        quicksort_helper(list, low, pivot_index - 1);
+        quicksort_helper(list, pivot_index + 1, high);
+    }
+}
+
+template <class C>
+Error_code quicksort(List<C> &list) {
+    if (list.empty()) {
+        return fail;
+    }
+    int size = list.size();
+    quicksort_helper(list, 0, size - 1);
+    return success;
+}

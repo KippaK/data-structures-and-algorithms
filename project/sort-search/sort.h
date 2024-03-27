@@ -37,11 +37,23 @@ Error_code insertion_sort(List<C> &list)
 	for (int i = 1; i < list_len; i++) {
 		status = list.retrieve(i, item_i);
 		if (status != success) { return status; }
-		for (int j = i; j < list_len - 1; i++) {
+		for (int j = i - 1; j >= 0; j--) {
 			status = list.retrieve(j, item, j);
+			C temp;
 			if (status != success) { return status; }
 			if (i > j) {
-				// TODO
+				status = list.remove(i, temp);
+				if (status != success) { return status; }
+				status = list.insert(j + 1, temp);
+				if (status != success) { return status; }
+				continue;
+			}
+			if (j == 0) {
+				status = list.remove(i, temp);
+				if (status != success) { return status; }
+				status = list.insert(0, temp);
+				if (status != success) { return status; }
+				continue;
 			}
 		}
 	}

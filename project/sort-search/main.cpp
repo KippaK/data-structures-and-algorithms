@@ -2,6 +2,7 @@
 #include "timing.h"
 #include "list-generation.h"
 #include "random.h"
+#include "utility.h"
 
 #include <cmath>
 #include <string>
@@ -141,6 +142,28 @@ Error_code group_2()
 	return status;
 }
 
+Error_code group_3_4(Error_code (*sort_func)(List<int>&))
+{
+	Error_code status = success;
+	const size_t LIST_SIZE = 1000;
+	const size_t PRINT_SIZE = 200;
+	const int MAX_VAL = 10000;
+	List<int> list;
+	status = random_list(list, LIST_SIZE, MAX_VAL);
+	if (status != success) { return status; }
+
+	cout << "--- UNSORTED LIST ---" << endl;
+	print_first_n_items(list, PRINT_SIZE);
+	
+	status = (*sort_func)(list);
+	if (status != success) { return status; }
+
+	cout << "--- SORTED LIST ---" << endl;
+	print_first_n_items(list, PRINT_SIZE);
+
+	return status;
+}
+
 int main()
 {
 	srand(time(NULL));
@@ -148,7 +171,7 @@ int main()
 		"Sequential search on sorted list",
 		"Binary search on sorted list",
 		"Insertion sort on randomized data",
-		"Merge sort on randomized data",
+		"Quicksort on randomized data",
 		"Additional sort on randomized data"
 	};
 	int choice = user_selection(5, choices);
@@ -160,7 +183,13 @@ int main()
 	case 2:
 		status = group_2();
 		break;
+	case 3:
+		status = group_3_4(insertion_sort);
+		break;
+	case 4:
+		status = group_3_4(quicksort);
 	}
+	cout << return_error_message(status) << endl;
 	if (status == success) { return 0; }
 	return 1;
 }

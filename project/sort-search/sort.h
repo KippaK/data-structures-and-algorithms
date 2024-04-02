@@ -31,32 +31,29 @@ Error_code list_element_swap(List<C> &list, int pos1, int pos2)
 template <class C>
 Error_code insertion_sort(List<C> &list)
 {
-	int list_len = list.size();
-	C item_i, item_j;
-	Error_code status = success;
-	for (int i = 1; i < list_len; i++) {
-		status = list.retrieve(i, item_i);
-		if (status != success) { return status; }
-		for (int j = i - 1; j >= 0; j--) {
-			status = list.retrieve(j, item_j);
-			if (status != success) { return status; }
-			C temp;
-			if (i > j) {
-				status = list.remove(i, temp);
-				if (status != success) { return status; }
-				status = list.insert(j + 1, temp);
-				if (status != success) { return status; }
-				break;
-			}
-			if (j == 0) {
-				status = list.remove(i, temp);
-				if (status != success) { return status; }
-				status = list.insert(0, temp);
-				if (status != success) { return status; }
-				break;
-			}
-		}
-	}
+    int list_len = list.size();
+    C item_i;
+    Error_code status = success;
+    for (int i = 1; i < list_len; i++) {
+        status = list.retrieve(i, item_i);
+        if (status != success) { return status; }
+        int j = i - 1;
+        while (j >= 0) {
+            C item_j;
+            status = list.retrieve(j, item_j);
+            if (status != success) { return status; }
+            if (item_i < item_j) {
+                j--;
+            } else {
+                break;
+            }
+        }
+        status = list.remove(i, item_i);
+        if (status != success) { return status; }
+        status = list.insert(j + 1, item_i);
+        if (status != success) { return status; }
+    }
+    return status;
 }
 
 template <class C>
@@ -93,61 +90,9 @@ Error_code bubble_sort(List<C> &list)
 }
 
 template <class C>
-Node<C> *merge(Node<C> *list1, Node<C> *list2) {
-    if (!list1) return list2;
-    if (!list2) return list1;
-
-    Node<C> *result = nullptr;
-
-    if (list1->data <= list2->data) {
-        result = list1;
-        result->next = merge(list1->next, list2);
-    } else {
-        result = list2;
-        result->next = merge(list1, list2->next);
-    }
-
-    return result;
-}
-
-template <class C>
-Error_code merge_sort(List<C> &list) {
-    if (list.size() <= 1) return success;
-
-    List<C> list1, list2;
-    int mid = list.size() / 2;
-    C x;
-
-    for (int i = 0; i < mid; ++i) {
-        list.retrieve(i, x);
-        list1.insert(i, x);
-    }
-
-    for (int i = mid; i < list.size(); ++i) {
-        list.retrieve(i, x);
-        list2.insert(i - mid, x);
-    }
-
-    merge_sort(list1);
-    merge_sort(list2);
-
-    Node<C> *sorted = merge(list1.head, list2.head);
-
-    list.clear();
-    while (sorted) {
-        list.push_back(sorted->data);
-        Node<C> *temp = sorted;
-        sorted = sorted->next;
-        delete temp;
-    }
-
-    return success;
-}
-
-template <class C>
 int partition(List<C> &list, int low, int high) {
     C pivot;
-    list.retrieve(low, pivot); // Choose the pivot as the first element
+    list.retrieve(low, pivot);
     int left = low + 1;
     int right = high;
     

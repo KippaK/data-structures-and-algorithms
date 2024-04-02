@@ -39,6 +39,7 @@ public:
 	Error_code remove(int position, C &x);
 	Error_code insert(int position, const C &x);
 	Error_code push_back(const C &x);
+	Node<C> *set_position(int position) const;
 
 	~List();
 	List(const List<C> &copy);
@@ -47,7 +48,6 @@ protected:
 	int count;
 	Node<C> *head;
 
-	Node<C> *set_position(int position) const;
 };
 
 template <class C>

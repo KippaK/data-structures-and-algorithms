@@ -5,12 +5,32 @@
 #include "sort.h"
 #include "search.h"
 
+#include <cmath>
+
 template <class C>
 void print_list(const List<C> &list)
 {
 	Error_code status = success;
 	C item;
 	int list_len = list.size();
+	if (list_len < 1) { return; }
+	status = list.retrieve(0, item);
+	if (status != success) { return; }
+	std::cout << item;
+	for (int i = 1; i < list_len; i++) {
+		status = list.retrieve(i, item);
+		if (status != success) { return; }
+		std::cout << ", " << item;
+	}
+	std::cout << std::endl;
+}
+
+template <class C>
+void print_first_n_items(const List<C> &list, size_t n)
+{
+	Error_code status = success;
+	C item;
+	int list_len = std::min((int)n, (int)list.size());
 	if (list_len < 1) { return; }
 	status = list.retrieve(0, item);
 	if (status != success) { return; }

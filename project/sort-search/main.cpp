@@ -3,9 +3,21 @@
 #include "list-generation.h"
 #include "random.h"
 
+#include <cmath>
+#include <string>
+#include <ctime>
+#include <iomanip>
+
 using std::cout;
 using std::cin;
 using std::endl;
+using std::string;
+using std::to_string;
+
+double round_to(double value, double precision = 1.0)
+{
+	return std::round(value / precision) * precision;
+}
 
 int user_selection(int choice_count, const char *choices[])
 {
@@ -54,13 +66,15 @@ Error_code group_1()
 	return status;
 }
 
-Error_code group_2_single_run(const List<int> &list)
+Error_code group_2_single_run(
+	const List<int> &list, 
+	clock_t (&clk_cycles)[2],
+	double (&time)[2],
+	int &target)
 {
 	Error_code status = success;
-	int target = (rand() % list.size() + 1) * 2 - 1;
+	target = (rand() % list.size() + 1) * 2 - 1;
 	int position;
-	clock_t clk_cycles[2];
-	double time[2];
 
 	clk_cycles[0] = sorted_search_time(
 		list, 
@@ -79,19 +93,6 @@ Error_code group_2_single_run(const List<int> &list)
 	
 	time[0] = ((double) (clk_cycles[0]) / ((double) CLOCKS_PER_SEC));
 	time[1] = ((double) (clk_cycles[1]) / ((double) CLOCKS_PER_SEC));
-
-	cout	<< '|' 
-			<< time[0] 
-			<< "\t|" 
-			<< clk_cycles[0] 
-			<< "\t|" 
-			<< time[1]
-			<< "\t|"
-			<< clk_cycles[1]
-			<< "\t|"
-			<< target
-			<< "\t|"
-			<< endl;
 	return status;
 }
 
@@ -107,15 +108,36 @@ Error_code group_2()
 
 	status = sorted_two_n_minus_one(list_size, list);
 	if (status != success) { return status; }
-	cout << "+---------------+---------------+-------+" << endl;
-	cout << "|  Sequential   |    Binary     |       |" << endl;
-	cout << "|Time   |Cycles |Time   |Cycles |Target |" << endl;
-	cout << "+-------+-------+-------+-------+-------+" << endl;
+
+	clock_t clk_cycles[10][2];
+	double times[10][2];
+	int targets[10];
+
 	for (int i = 0; i < 10; i++) {
-		status = group_2_single_run(list);
+		status = group_2_single_run(list, clk_cycles[i], times[i], targets[i]);
 		if (status != success) { return status; }
 	}
-	cout << "+---------------+---------------+-------+" << endl;
+
+	cout << "+----------------+---------------+------+" << endl;
+	cout << "|   Sequential   |     Binary    |      |" << endl;
+	cout << "|  Time  |Cycles |  Time  |Cycles|Target|" << endl;
+	cout << "+--------+-------+--------+------+------+" << endl;
+	
+	for (int i = 0; i < 10; i++) {
+		cout << '|';
+		cout.width(8);
+		cout << std::left << times[i][0] << '|';
+		cout.width(7);
+		cout << std::right << clk_cycles[i][0] << '|';
+		cout.width(8);
+		cout << std::left << times[i][1] << '|';
+		cout.width(6);
+		cout << std::right << clk_cycles[i][1] << '|';
+		cout.width(6);
+		cout << targets[i] << '|' << endl;
+	}
+
+	cout << "+--------+-------+--------+------+------+" << endl;
 	return status;
 }
 

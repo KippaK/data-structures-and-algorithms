@@ -34,7 +34,7 @@ public:
 	void clear();
 	void traverse(void (*visit)(C &));
 	Error_code retrieve(int position, C &x) const;
-	Error_code retrieve(int postition, Node<C> *&x) const;
+	Error_code retrieve(int position, Node<C> *&x) const;
 	Error_code replace(int position, const C &x);
 	Error_code remove(int position, C &x);
 	Error_code insert(int position, const C &x);
@@ -129,6 +129,11 @@ Error_code List<C>::insert(int position, const C &x)
 template <class C>
 Error_code List<C>::push_back(const C &x)
 {
+	if (head == nullptr) {
+		head = new Node<C>(x, nullptr);
+		count++;
+		return success;
+	}
 	Node<C> *current = head;
 	while (current->next != nullptr) {
 		current = current->next;

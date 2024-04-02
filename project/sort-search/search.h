@@ -12,13 +12,15 @@ Error_code sequential_search(const List<C> &list, const C &target, int &position
 	for (int i = 0; i < list_len; i++) {
 		status = list.retrieve(i, item);
 		if (status != success) {
+			position = -1;
 			return status;
 		}
-		if (item.data == target) {
+		if (item == target) {
 			position = i;
-			return success;
+			return entry_found;
 		}
 	}
+	position = -1;
 	return not_present;
 }
 

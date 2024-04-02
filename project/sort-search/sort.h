@@ -10,7 +10,7 @@ Error_code list_element_swap(List<C> &list, int pos1, int pos2)
 		return utility_range_error;
 	}
 	int list_len = list.size();
-	if (pos1 => list_len || pos2 => list_len) {
+	if (pos1 >= list_len || pos2 >= list_len) {
 		return utility_range_error;
 	}
 	if (pos1 == pos2) {
@@ -38,9 +38,9 @@ Error_code insertion_sort(List<C> &list)
 		status = list.retrieve(i, item_i);
 		if (status != success) { return status; }
 		for (int j = i - 1; j >= 0; j--) {
-			status = list.retrieve(j, item, j);
-			C temp;
+			status = list.retrieve(j, item_j);
 			if (status != success) { return status; }
+			C temp;
 			if (i > j) {
 				status = list.remove(i, temp);
 				if (status != success) { return status; }

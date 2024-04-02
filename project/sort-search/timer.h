@@ -4,9 +4,10 @@
 
 class Timer{
 public:
-   Timer();
-   double elapsed_time();
-   void reset();
+	Timer();
+	double elapsed_time();
+	clock_t clock_cycles_elapsed();
+	void reset();
 private:
-   clock_t start_time;
+	clock_t start_time;
 };

@@ -152,13 +152,13 @@ Error_code group_3_4(Error_code (*sort_func)(List<int>&))
 	status = random_list(list, LIST_SIZE, MAX_VAL);
 	if (status != success) { return status; }
 
-	cout << "--- UNSORTED LIST ---" << endl;
+	cout << "--- UNSORTED LIST (first " << PRINT_SIZE << " items) ---" << endl;
 	print_first_n_items(list, PRINT_SIZE);
 	
 	status = (*sort_func)(list);
 	if (status != success) { return status; }
 
-	cout << "--- SORTED LIST ---" << endl;
+	cout << "---- SORTED LIST (first " << PRINT_SIZE << " items) ----" << endl;
 	print_first_n_items(list, PRINT_SIZE);
 
 	return status;

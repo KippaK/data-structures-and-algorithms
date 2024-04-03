@@ -5,8 +5,6 @@
 
 #include <cstddef>
 
-
-
 template <class C>
 Error_code sorted_two_n_minus_one(size_t n, List<C> &list)
 {

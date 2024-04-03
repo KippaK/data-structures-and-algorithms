@@ -35,6 +35,7 @@ public:
 	void traverse(void (*visit)(C &));
 	Error_code retrieve(int position, C &x) const;
 	Error_code retrieve(int position, Node<C> *&x) const;
+	Node<C>* retrieve(int position) const;
 	Error_code replace(int position, const C &x);
 	Error_code remove(int position, C &x);
 	Error_code insert(int position, const C &x);
@@ -165,6 +166,17 @@ Error_code List<C>::retrieve(int position, Node<C> *&x) const
 	current = set_position(position);
 	x = current;
 	return success;
+}
+
+template <class C>
+Node<C>* List<C>::retrieve(int position) const
+{
+	Node<C> *current;
+	if (position < 0 || position >= count) {
+		return nullptr;
+	}
+	current = set_position(position);
+	return current;
 }
 
 template <class C>

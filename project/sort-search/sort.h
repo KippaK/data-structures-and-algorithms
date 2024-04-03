@@ -137,3 +137,44 @@ Error_code quicksort(List<C> &list) {
     quicksort_helper(list, 0, size - 1);
     return success;
 }
+
+template <class C>
+void heapify(List<C> &list, int n, int i) {
+    int largest = i;
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+
+    if (left < n && list.retrieve(left)->data > list.retrieve(largest)->data)
+        largest = left;
+
+    if (right < n && list.retrieve(right)->data > list.retrieve(largest)->data)
+        largest = right;
+
+    if (largest != i) {
+        C temp;
+        list.retrieve(i, temp);
+        list.replace(i, list.retrieve(largest)->data);
+        list.replace(largest, temp);
+
+        heapify(list, n, largest);
+    }
+}
+
+template <class C>
+Error_code heapsort(List<C> &list) {
+    int n = list.size();
+
+    for (int i = n / 2 - 1; i >= 0; i--)
+        heapify(list, n, i);
+
+    for (int i = n - 1; i > 0; i--) {
+        C temp;
+        list.retrieve(0, temp);
+        list.replace(0, list.retrieve(i)->data);
+        list.replace(i, temp);
+
+        heapify(list, i, 0);
+    }
+
+    return success;
+}

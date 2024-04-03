@@ -42,3 +42,15 @@ Error_code random_list(List<C> &list, size_t list_size, C max_val)
 	}
 	return success;
 }
+
+template <class C>
+void random_list_threaded(List<C> &list, size_t list_size, C max_val)
+{
+	list.clear();
+	Error_code status = success;
+	for (size_t i = 1; i <= list_size; i++) {
+		status = list.push_back(C((rand() % max_val)));
+		if (status != success) { return; }
+	}
+	return;
+}

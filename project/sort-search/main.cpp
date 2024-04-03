@@ -192,6 +192,51 @@ Error_code group_3_4(Error_code (*sort_func)(List<int>&))
 	return status;
 }
 
+Error_code group_5()
+{
+	Error_code status = success;
+	const int LIST_MAX_VAL = 10000;
+	const size_t LIST_SIZE_MULTIPLIER = 1000;
+
+	List<int> lists[10][4];
+
+	vector<thread> threads;
+
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 4; j++) {
+			size_t list_size = (i + 1) * LIST_SIZE_MULTIPLIER;
+			threads.emplace_back([&lists, i, j, list_size, LIST_MAX_VAL]() {
+				random_list_threaded(
+					lists[i][j],
+					list_size,
+					LIST_MAX_VAL
+				);
+			});
+		}
+	}
+	for (auto &thread : threads) {
+		thread.join();
+	}
+	threads.clear();
+
+	clock_t times[10][4];
+
+	void (*sort_func[])(List<int>&, Error_code&) = {
+		insertion_sort_threaded,
+		bubble_sort_threaded,
+		quicksort_threaded,
+		heapsort_threaded
+	};
+
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 4; j++) {
+			times[i][j] = 
+		}
+	}
+
+	return status;
+}
+
 int main()
 {
 	srand(time(NULL));
@@ -216,6 +261,10 @@ int main()
 		break;
 	case 4:
 		status = group_3_4(quicksort);
+		break;
+	case 5:
+		status = group_5();
+		break;
 	}
 	cout << return_error_message(status) << endl;
 	if (status == success) { return 0; }

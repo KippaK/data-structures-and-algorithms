@@ -8,12 +8,17 @@
 #include <string>
 #include <ctime>
 #include <iomanip>
+#include <vector>
+#include <thread>
 
 using std::cout;
 using std::cin;
 using std::endl;
 using std::string;
 using std::to_string;
+using std::vector;
+using std::thread;
+using std::ref;
 
 double round_to(double value, double precision = 1.0)
 {
@@ -97,6 +102,16 @@ Error_code group_2_single_run(
 	return status;
 }
 
+void run_group_2_single_run(
+	const List<int> &list,
+	clock_t (&clk_cycles)[2],
+	double (&time)[2],
+	int &target,
+	Error_code &status)
+{
+	status = group_2_single_run(list, clk_cycles, time, target);
+}
+
 Error_code group_2()
 {
 	List<int> list;
@@ -107,28 +122,41 @@ Error_code group_2()
 	cout << "Enter data size (length of the lists): ";
 	cin >> list_size;
 
+	cout << "Generating list with size of " << list_size << "..." << endl;
 	status = sorted_two_n_minus_one(list_size, list);
+	cout << "List generated!" << endl;
 	if (status != success) { return status; }
 
 	clock_t clk_cycles[10][2];
 	double times[10][2];
 	int targets[10];
 
+	vector<thread> threads;
+
 	for (int i = 0; i < 10; i++) {
-		status = group_2_single_run(list, clk_cycles[i], times[i], targets[i]);
-		if (status != success) { return status; }
+		threads.emplace_back(
+			run_group_2_single_run,
+			ref(list),
+			ref(clk_cycles[i]),
+			ref(times[i]),
+			ref(targets[i]),
+			ref(status));
 	}
 
-	cout << "+----------------+---------------+------+" << endl;
-	cout << "|   Sequential   |     Binary    |      |" << endl;
-	cout << "|  Time  |Cycles |  Time  |Cycles|Target|" << endl;
-	cout << "+--------+-------+--------+------+------+" << endl;
+	for (auto& thread : threads) {
+		thread.join();
+	}
+
+	cout << "+-----------------+---------------+------+" << endl;
+	cout << "|   Sequential    |     Binary    |      |" << endl;
+	cout << "|  Time  | Cycles |  Time  |Cycles|Target|" << endl;
+	cout << "+--------+--------+--------+------+------+" << endl;
 	
 	for (int i = 0; i < 10; i++) {
 		cout << '|';
 		cout.width(8);
 		cout << std::left << times[i][0] << '|';
-		cout.width(7);
+		cout.width(8);
 		cout << std::right << clk_cycles[i][0] << '|';
 		cout.width(8);
 		cout << std::left << times[i][1] << '|';
@@ -138,7 +166,7 @@ Error_code group_2()
 		cout << targets[i] << '|' << endl;
 	}
 
-	cout << "+--------+-------+--------+------+------+" << endl;
+	cout << "+--------+--------+--------+------+------+" << endl;
 	return status;
 }
 

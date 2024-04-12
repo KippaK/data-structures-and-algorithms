@@ -221,16 +221,9 @@ Error_code group_5()
 
 	clock_t times[10][4];
 
-	void (*sort_func[])(List<int>&, Error_code&) = {
-		insertion_sort_threaded,
-		bubble_sort_threaded,
-		quicksort_threaded,
-		heapsort_threaded
-	};
-
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 4; j++) {
-			times[i][j] = 
+
 		}
 	}
 

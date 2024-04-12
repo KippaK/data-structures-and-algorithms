@@ -45,12 +45,29 @@ void print_first_n_items(const List<C> &list, size_t n)
 
 template <class C>
 clock_t sort_list_time(
-	const List<C> list,
+	List<C> list,
 	Error_code (*func)(List<C> &))
 {
 	Error_code status = success;
 	Timer timer;
 	status = (*func)(list);
+	clock_t elapsed_time = timer.clock_cycles_elapsed();
+	if (status != success) {
+		return -1;
+	}
+	return elapsed_time;
+}
+
+template <class C> 
+clock_t sort_list_time(
+	List<C> list,
+	unsigned int &swaps,
+	unsigned int &comparisons,
+	Error_code (*func)(List<C> &, unsigned int&, unsigned int&))
+{
+	Error_code status = success;
+	Timer timer;
+	status = (*func)(list, swaps, comparisons);
 	clock_t elapsed_time = timer.clock_cycles_elapsed();
 	if (status != success) {
 		return -1;

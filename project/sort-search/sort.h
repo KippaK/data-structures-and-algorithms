@@ -4,7 +4,7 @@
 #include <cmath>
 
 template <class C>
-Error_code list_element_swap(List<C> &list, int pos1, int pos2)
+static Error_code list_element_swap(List<C> &list, int pos1, int pos2)
 {
 	if (pos1 < 0 || pos2 < 2) {
 		return utility_range_error;
@@ -57,7 +57,7 @@ Error_code insertion_sort(List<C> &list)
 }
 
 template <class C>
-Error_code bubble_sort_single_pass(List<C> &list, bool &sorted)
+static Error_code bubble_sort_single_pass(List<C> &list, bool &sorted)
 {
 	Error_code status = success;
 	C current, next;
@@ -90,7 +90,7 @@ Error_code bubble_sort(List<C> &list)
 }
 
 template <class C>
-int partition(List<C> &list, int low, int high) {
+static int partition(List<C> &list, int low, int high) {
     C pivot;
     list.retrieve(low, pivot);
     int left = low + 1;
@@ -120,7 +120,7 @@ int partition(List<C> &list, int low, int high) {
 }
 
 template <class C>
-void quicksort_helper(List<C> &list, int low, int high) {
+static void quicksort_helper(List<C> &list, int low, int high) {
     if (low < high) {
         int pivot_index = partition(list, low, high);
         quicksort_helper(list, low, pivot_index - 1);
@@ -139,7 +139,7 @@ Error_code quicksort(List<C> &list) {
 }
 
 template <class C>
-void heapify(List<C> &list, int n, int i) {
+static void heapify(List<C> &list, int n, int i) {
     int largest = i;
     int left = 2 * i + 1;
     int right = 2 * i + 2;

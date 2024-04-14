@@ -2,35 +2,10 @@
 
 #include "list.h"
 #include <cmath>
+#include <stdint.h>
 
 template <class C>
-static Error_code list_element_swap(List<C> &list, int pos1, int pos2, unsigned long &swaps, unsigned long &comparisons)
-{
-	if (pos1 < 0 || pos2 < 2) {
-		return utility_range_error;
-	}
-	int list_len = list.size();
-	if (pos1 >= list_len || pos2 >= list_len) {
-		return utility_range_error;
-	}
-	if (pos1 == pos2) {
-		success;
-	}
-	Error_code status = success;
-	C item1, item2;
-	swaps++;
-	status = list.retrieve(pos1, item1);
-	if (status != success) { return status; }
-	status = list.retrieve(pos2, item2);
-	if (status != success) { return status; }
-	status = list.replace(pos1, item2);
-	if (status != success) { return status; }
-	status = list.replace(pos2, item1);
-	return status;
-}
-
-template <class C>
-Error_code insertion_sort(List<C> &list, unsigned long &swaps, unsigned long &comparisons)
+Error_code insertion_sort(List<C> &list, uint32_t &swaps, uint32_t &comparisons)
 {
 	swaps = 0;
 	comparisons = 0;
@@ -63,14 +38,14 @@ Error_code insertion_sort(List<C> &list, unsigned long &swaps, unsigned long &co
 }
 
 template <class C>
-void insertion_sort(List<C> &list, unsigned long &swaps, unsigned long &comparisons, Error_code &status)
+void insertion_sort(List<C> &list, uint32_t &swaps, uint32_t &comparisons, Error_code &status)
 {
 	status = insertion_sort(list, swaps, comparisons);
 }
 
 
 template <class C>
-static Error_code bubble_sort_single_pass(List<C> &list, bool &sorted, unsigned long &swaps, unsigned long &comparisons)
+static Error_code bubble_sort_single_pass(List<C> &list, bool &sorted, uint32_t &swaps, uint32_t &comparisons)
 {
 	Error_code status = success;
 	C current, next;
@@ -82,19 +57,20 @@ static Error_code bubble_sort_single_pass(List<C> &list, bool &sorted, unsigned 
 		comparisons++;
 		if (current > next) {
 			sorted = false;
-			list_element_swap(list, i, i + 1, swaps, comparisons);
+			swaps++;
+			list.replace(i, next);
+			list.replace(i + 1, current);
 		}
 	}
 	return success;
 }
 
 template <class C>
-Error_code bubble_sort(List<C> &list, unsigned long &swaps, unsigned long &comparisons)
+Error_code bubble_sort(List<C> &list, uint32_t &swaps, uint32_t &comparisons)
 {
 	swaps = 0;
 	comparisons = 0;
 	Error_code status = success;
-	int list_len = list.size();
 	bool sorted = false;
 	while (!sorted) {
 		sorted = true;
@@ -103,17 +79,18 @@ Error_code bubble_sort(List<C> &list, unsigned long &swaps, unsigned long &compa
 			return status;
 		}
 	}
+	return success;
 }
 
 
 template <class C>
-void bubble_sort(List<C> &list, unsigned long &swaps, unsigned long &comparisons, Error_code &status)
+void bubble_sort(List<C> &list, uint32_t &swaps, uint32_t &comparisons, Error_code &status)
 {
 	status = bubble_sort(list, swaps, comparisons);
 }
 
-static template <class C>
-int partition(List<C> &list, int low, int high, unsigned long &swaps, unsigned long &comparisons) {
+template <class C>
+static int partition(List<C> &list, int low, int high, uint32_t &swaps, uint32_t &comparisons) {
     C pivot;
     list.retrieve(low, pivot);
     int left = low + 1;
@@ -123,9 +100,11 @@ int partition(List<C> &list, int low, int high, unsigned long &swaps, unsigned l
         C left_item, right_item;
         list.retrieve(left, left_item);
         list.retrieve(right, right_item);
-        if (left_item <= pivot && comparisons++) {
+		comparisons = comparisons + 2;
+        if (left_item <= pivot) {
             left++;
-        } else if (right_item > pivot && comparisons++) {
+			comparisons--;
+        } else if (right_item > pivot) {
             right--;
         } else {
 			swaps++;
@@ -143,8 +122,7 @@ int partition(List<C> &list, int low, int high, unsigned long &swaps, unsigned l
 }
 
 template <class C>
-static void quicksort_helper(List<C> &list, int low, int high, unsigned long &swaps, unsigned long &comparisons) {
-	comparisons++;
+static void quicksort_helper(List<C> &list, int low, int high, uint32_t &swaps, uint32_t &comparisons) {
     if (low < high) {
         int pivot_index = partition(list, low, high, swaps, comparisons);
         quicksort_helper(list, low, pivot_index - 1, swaps, comparisons);
@@ -153,7 +131,7 @@ static void quicksort_helper(List<C> &list, int low, int high, unsigned long &sw
 }
 
 template <class C>
-Error_code quicksort(List<C> &list, unsigned long &swaps, unsigned long &comparisons)
+Error_code quicksort(List<C> &list, uint32_t &swaps, uint32_t &comparisons)
 {
 	swaps = 0;
 	comparisons = 0;
@@ -166,13 +144,13 @@ Error_code quicksort(List<C> &list, unsigned long &swaps, unsigned long &compari
 }
 
 template <class C>
-void quicksort(List<C> &list, unsigned long &swaps, unsigned long &comparisons, Error_code &status)
+void quicksort(List<C> &list, uint32_t &swaps, uint32_t &comparisons, Error_code &status)
 {
 	status = quicksort(list, swaps, comparisons);
 }
 
 template <class C>
-static void heapify(List<C> &list, int n, int i, unsigned long &swaps, unsigned long &comparisons)
+static void heapify(List<C> &list, int n, int i, uint32_t &swaps, uint32_t &comparisons)
 {
     int largest = i;
     int left = 2 * i + 1;
@@ -199,7 +177,7 @@ static void heapify(List<C> &list, int n, int i, unsigned long &swaps, unsigned 
 }
 
 template <class C>
-Error_code heapsort(List<C> &list, unsigned long &swaps, unsigned long &comparisons)
+Error_code heapsort(List<C> &list, uint32_t &swaps, uint32_t &comparisons)
 {
     int n = list.size();
 	swaps = 0;
@@ -216,12 +194,11 @@ Error_code heapsort(List<C> &list, unsigned long &swaps, unsigned long &comparis
 
         heapify(list, i, 0, swaps, comparisons);
     }
-
     return success;
 }
 
 template <class C>
-void heapsort(List<C> &list, unsigned long &swaps, unsigned long &comparisons, Error_code &status)
+void heapsort(List<C> &list, uint32_t &swaps, uint32_t &comparisons, Error_code &status)
 {
 	status = heapsort(list, swaps, comparisons);
 }

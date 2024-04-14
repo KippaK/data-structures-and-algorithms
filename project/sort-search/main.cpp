@@ -3,6 +3,7 @@
 #include "list-generation.h"
 #include "random.h"
 #include "utility.h"
+#include "thread-pool.h"
 
 #include <cmath>
 #include <string>
@@ -10,6 +11,7 @@
 #include <iomanip>
 #include <vector>
 #include <thread>
+#include <stdint.h>
 
 using std::cout;
 using std::cin;
@@ -20,9 +22,22 @@ using std::vector;
 using std::thread;
 using std::ref;
 
-double round_to(double value, double precision = 1.0)
+const size_t GROUP_3_4_LIST_SIZE = 2000;
+const size_t GROUP_3_4_PRINT_SIZE = 100;
+const int GROUP_3_4_MAX_VAL = 10000;
+
+const int GROUP_5_LIST_MAX_VAL = 10000;
+
+// Raising this value will greatly increase runtime of group 5
+const size_t GROUP_5_LIST_SIZE_MULTIPLIER = 100;
+
+void clear_console()
 {
-	return std::round(value / precision) * precision;
+#ifdef _WIN32
+	system("CLS");
+#else
+	system("clear");
+#endif // _WIN32
 }
 
 int user_selection(int choice_count, const char *choices[])
@@ -173,60 +188,148 @@ Error_code group_2()
 Error_code group_3_4(Error_code (*sort_func)(List<int>&))
 {
 	Error_code status = success;
-	const size_t LIST_SIZE = 1000;
-	const size_t PRINT_SIZE = 200;
-	const int MAX_VAL = 10000;
 	List<int> list;
-	status = random_list(list, LIST_SIZE, MAX_VAL);
+	status = random_list(list, GROUP_3_4_LIST_SIZE, GROUP_3_4_MAX_VAL);
 	if (status != success) { return status; }
 
-	cout << "--- UNSORTED LIST (first " << PRINT_SIZE << " items) ---" << endl;
-	print_first_n_items(list, PRINT_SIZE);
+	cout << "--- UNSORTED LIST (first " << GROUP_3_4_PRINT_SIZE << " items) ---" << endl;
+	print_first_n_items(list, GROUP_3_4_PRINT_SIZE);
 	
 	status = (*sort_func)(list);
 	if (status != success) { return status; }
 
-	cout << "---- SORTED LIST (first " << PRINT_SIZE << " items) ----" << endl;
-	print_first_n_items(list, PRINT_SIZE);
+	cout << "---- SORTED LIST (first " << GROUP_3_4_PRINT_SIZE << " items) ----" << endl;
+	print_first_n_items(list, GROUP_3_4_PRINT_SIZE);
 
 	return status;
+}
+
+void print_line(const uint8_t *col_width, uint8_t col_count)
+{
+    for (uint8_t i = 0; i < col_count; i++) {
+        cout << '+';
+        for (uint8_t j = 0; j < col_width[i]; j++) {
+            cout << '-';
+        }
+    }
+    cout << '+' << endl;
+}
+
+void print_sort_performance(
+    clock_t (&times)[10][4], 
+    uint32_t (&swaps)[10][4], 
+    uint32_t (&comparisons)[10][4])
+{
+    const char* sorts[] = {
+        "Insertion",
+        "Bubble",
+        "Quick",
+        "Heap"
+    };
+    clear_console();
+    const uint8_t col_width[6] = { 6, 14, 13, 13, 13, 13 };
+
+    print_line(col_width, 6);
+    cout << "| Size | Stat         ";
+    for (int i = 0; i < 4; ++i) {
+        cout << '|' << std::setw(col_width[i + 2]) << sorts[i];
+    }
+    cout << '|' << endl;
+    print_line(col_width, 6);
+
+    for (int i = 0; i < 10; ++i) {
+        cout	<< '|' << std::setw(5) 
+				<< (i + 1) * GROUP_5_LIST_SIZE_MULTIPLIER 
+				<< " | Swaps        ";
+
+        for (int j = 0; j < 4; ++j) {
+            cout << '|' << std::setw(col_width[j + 2]) << swaps[i][j];
+        }
+        cout << '|' << endl;
+
+        cout << "|      | Comparisons  ";
+        for (int j = 0; j < 4; ++j) {
+            cout << '|' << std::setw(col_width[j + 2]) << comparisons[i][j];
+        }
+        cout << '|' << endl;
+/*
+        cout << "|      | Clock Cycles ";
+        for (int j = 0; j < 4; ++j) {
+            cout << '|' << std::setw(col_width[j + 2]) << times[i][j];
+        }
+        cout << '|' << endl;
+*/
+        cout << "|      | Time         ";
+        for (int j = 0; j < 4; ++j) {
+            cout	<< '|' << std::setw(col_width[j + 2]) 
+					<< std::fixed << std::setprecision(6) 
+					<< ((float)times[i][j]) / CLOCKS_PER_SEC;
+        }
+        cout << '|' << endl;
+
+        print_line(col_width, 6);
+    }
 }
 
 Error_code group_5()
 {
 	Error_code status = success;
-	const int LIST_MAX_VAL = 10000;
-	const size_t LIST_SIZE_MULTIPLIER = 1000;
 
 	List<int> lists[10][4];
 
-	vector<thread> threads;
+	ThreadPool threads(std::thread::hardware_concurrency());
 
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 4; j++) {
-			size_t list_size = (i + 1) * LIST_SIZE_MULTIPLIER;
-			threads.emplace_back([&lists, i, j, list_size, LIST_MAX_VAL]() {
+			size_t list_size = (i + 1) * GROUP_5_LIST_SIZE_MULTIPLIER;
+			threads.enqueue([&lists, i, j, list_size](int GROUP_5_LIST_MAX_VAL) {
 				random_list_threaded(
 					lists[i][j],
 					list_size,
-					LIST_MAX_VAL
+					GROUP_5_LIST_MAX_VAL
+				);
+			}, GROUP_5_LIST_MAX_VAL);
+		}
+	}
+	size_t threadsFinished = 0;
+	while (threads.tasksCompleted != 40) {}
+	threads.tasksCompleted = 0;
+
+
+	clock_t times[10][4] = {};
+	uint32_t swaps[10][4] = {};
+	uint32_t comparisons[10][4] = {};
+
+	Error_code (*sort_func[])(List<int>&, uint32_t&, uint32_t&) = {
+		insertion_sort,
+		bubble_sort,
+		quicksort,
+		heapsort
+	};
+
+	for (int i = 9; i >= 0; i--) {
+		for (int j = 0; j < 4; j++) {
+			threads.enqueue(
+				[&lists, i, j, &swaps, &comparisons, &times, &sort_func]()
+			{
+				sort_list_time(
+					lists[i][j],
+					swaps[i][j],
+					comparisons[i][j],
+					sort_func[j],
+					times[i][j]
 				);
 			});
 		}
 	}
-	for (auto &thread : threads) {
-		thread.join();
-	}
-	threads.clear();
 
-	clock_t times[10][4];
-
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 4; j++) {
-
+	threadsFinished = 0;
+	while (threads.tasksCompleted != 40) {
+		if (threadsFinished != threads.tasksCompleted) {
+			threadsFinished = threads.tasksCompleted;
+			print_sort_performance(times, swaps, comparisons);
 		}
 	}
-
 	return status;
 }
 
@@ -235,10 +338,10 @@ int main()
 	srand(time(NULL));
 	const char *choices[] = {
 		"Sequential search on sorted list",
-		"Binary search on sorted list",
+		"Comparison of sequential and binary search",
 		"Insertion sort on randomized data",
 		"Quicksort on randomized data",
-		"Additional sort on randomized data"
+		"Sort comparisons on randomized data"
 	};
 	int choice = user_selection(5, choices);
 	Error_code status = success;
@@ -259,7 +362,6 @@ int main()
 		status = group_5();
 		break;
 	}
-	cout << return_error_message(status) << endl;
 	if (status == success) { return 0; }
 	return 1;
 }

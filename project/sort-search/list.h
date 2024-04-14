@@ -55,7 +55,7 @@ template <class C>
 List<C>::List()
 {
 	count = 0;
-	head = NULL;
+	head = nullptr;
 }
  
 template <class C>
@@ -68,7 +68,7 @@ void List<C>::clear()
 		delete p;
 	}
 	count = 0;
-	head = NULL;
+	head = nullptr;
 }
  
 template <class C>
@@ -114,7 +114,7 @@ Error_code List<C>::insert(int position, const C &x)
 		following = head;
 	}
 	new_node = new Node<C>(x, following);
-	if (new_node == NULL) {
+	if (new_node == nullptr) {
 		return overflow;
 	}
 	if (position == 0) {
@@ -238,12 +238,12 @@ List<C>::List(const List<C> &copy)
 	count = copy.count;
 	Node<C> *new_node, *old_node = copy.head;
 
-	if (old_node == NULL) {
-		head = NULL;
+	if (old_node == nullptr) {
+		head = nullptr;
 	}
 	else {
 		new_node = head = new Node<C>(old_node->data);
-		while (old_node->next != NULL) {
+		while (old_node->next != nullptr) {
 			old_node = old_node->next;
 			new_node->next = new Node<C>(old_node->data);
 			new_node = new_node->next;
@@ -259,5 +259,5 @@ void List<C>::operator =(const List<C> &copy)
 	count = new_copy.count;
 	head = new_copy.head;
 	new_copy.count = 0;
-	new_copy.head = NULL;
+	new_copy.head = nullptr;
 }

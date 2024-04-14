@@ -4,31 +4,6 @@
 #include <cmath>
 
 template <class C>
-static Error_code list_element_swap(List<C> &list, int pos1, int pos2)
-{
-	if (pos1 < 0 || pos2 < 2) {
-		return utility_range_error;
-	}
-	int list_len = list.size();
-	if (pos1 >= list_len || pos2 >= list_len) {
-		return utility_range_error;
-	}
-	if (pos1 == pos2) {
-		success;
-	}
-	Error_code status = success;
-	C item1, item2;
-	status = list.retrieve(pos1, item1);
-	if (status != success) { return status; }
-	status = list.retrieve(pos2, item2);
-	if (status != success) { return status; }
-	status = list.replace(pos1, item2);
-	if (status != success) { return status; }
-	status = list.replace(pos2, item1);
-	return status;
-}
-
-template <class C>
 Error_code insertion_sort(List<C> &list)
 {
     int list_len = list.size();
@@ -57,6 +32,12 @@ Error_code insertion_sort(List<C> &list)
 }
 
 template <class C>
+void insertion_sort(List<C> &list, Error_code &status)
+{
+	status = insertion_sort(list);
+}
+
+template <class C>
 static Error_code bubble_sort_single_pass(List<C> &list, bool &sorted)
 {
 	Error_code status = success;
@@ -68,7 +49,8 @@ static Error_code bubble_sort_single_pass(List<C> &list, bool &sorted)
 		if (status != success) { return status; }
 		if (current > next) {
 			sorted = false;
-			list_element_swap(list, i, i + 1);
+			list.replace(i, next);
+			list.replace(i + 1, current);
 		}
 	}
 	return success;
@@ -78,7 +60,6 @@ template <class C>
 Error_code bubble_sort(List<C> &list)
 {
 	Error_code status = success;
-	int list_len = list.size();
 	bool sorted = false;
 	while (!sorted) {
 		sorted = true;
@@ -87,6 +68,13 @@ Error_code bubble_sort(List<C> &list)
 			return status;
 		}
 	}
+	return success;
+}
+
+template <class C>
+void bubble_sort(List<C> &list, Error_code &status)
+{
+	status = bubble_sort(list);
 }
 
 template <class C>
@@ -100,7 +88,6 @@ static int partition(List<C> &list, int low, int high) {
         C left_item, right_item;
         list.retrieve(left, left_item);
         list.retrieve(right, right_item);
-        
         if (left_item <= pivot) {
             left++;
         } else if (right_item > pivot) {
@@ -112,10 +99,9 @@ static int partition(List<C> &list, int low, int high) {
             right--;
         }
     }
-    
     list.replace(low, list.set_position(right)->data);
     list.replace(right, pivot);
-    
+
     return right;
 }
 
@@ -129,8 +115,9 @@ static void quicksort_helper(List<C> &list, int low, int high) {
 }
 
 template <class C>
-Error_code quicksort(List<C> &list) {
-    if (list.empty()) {
+Error_code quicksort(List<C> &list)
+{
+	if (list.empty()) {
         return fail;
     }
     int size = list.size();
@@ -139,17 +126,24 @@ Error_code quicksort(List<C> &list) {
 }
 
 template <class C>
-static void heapify(List<C> &list, int n, int i) {
+void quicksort(List<C> &list, Error_code &status)
+{
+	status = quicksort(list);
+}
+
+template <class C>
+static void heapify(List<C> &list, int n, int i)
+{
     int largest = i;
     int left = 2 * i + 1;
     int right = 2 * i + 2;
 
-    if (left < n && list.retrieve(left)->data > list.retrieve(largest)->data)
+    if (left < n && list.retrieve(left)->data > list.retrieve(largest)->data) {
         largest = left;
-
-    if (right < n && list.retrieve(right)->data > list.retrieve(largest)->data)
+	}
+    if (right < n && list.retrieve(right)->data > list.retrieve(largest)->data) {
         largest = right;
-
+	}
     if (largest != i) {
         C temp;
         list.retrieve(i, temp);
@@ -161,9 +155,9 @@ static void heapify(List<C> &list, int n, int i) {
 }
 
 template <class C>
-Error_code heapsort(List<C> &list) {
+Error_code heapsort(List<C> &list)
+{
     int n = list.size();
-
     for (int i = n / 2 - 1; i >= 0; i--)
         heapify(list, n, i);
 
@@ -175,6 +169,11 @@ Error_code heapsort(List<C> &list) {
 
         heapify(list, i, 0);
     }
-
     return success;
+}
+
+template <class C>
+void heapsort(List<C> &list, Error_code &status)
+{
+	status = heapsort(list);
 }

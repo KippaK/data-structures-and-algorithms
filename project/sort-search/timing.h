@@ -3,6 +3,7 @@
 #include "list.h"
 #include "timer.h"
 #include "sort.h"
+#include "sort-perf-log.h"
 #include "search.h"
 
 #include <cmath>
@@ -61,9 +62,9 @@ clock_t sort_list_time(
 template <class C> 
 clock_t sort_list_time(
 	List<C> list,
-	unsigned int &swaps,
-	unsigned int &comparisons,
-	Error_code (*func)(List<C> &, unsigned int&, unsigned int&))
+	uint32_t &swaps,
+	uint32_t &comparisons,
+	Error_code (*func)(List<C> &, uint32_t&, uint32_t&))
 {
 	Error_code status = success;
 	Timer timer;
@@ -73,6 +74,17 @@ clock_t sort_list_time(
 		return -1;
 	}
 	return elapsed_time;
+}
+
+template <class C>
+void sort_list_time(
+	List<C> list,
+	uint32_t &swaps,
+	uint32_t &comparisons,
+	Error_code (*func)(List<C>&, uint32_t&, uint32_t&),
+	clock_t &time)
+{
+	time = sort_list_time(list, swaps, comparisons, func);
 }
 
 template <class C>
